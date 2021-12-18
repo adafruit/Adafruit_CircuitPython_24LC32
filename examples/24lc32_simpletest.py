@@ -12,8 +12,8 @@ print("length: {}".format(len(eeprom)))
 eeprom[0] = 4
 print(eeprom[0])
 
-#eeprom[0:3] = [9, 3, 8, 1]
-#print(eeprom[0:3])
+# eeprom[0:3] = [9, 3, 8, 1]
+# print(eeprom[0:3])
 
 while True:
     pass

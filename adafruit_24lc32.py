@@ -190,9 +190,9 @@ class EEPROM_I2C(EEPROM):
     :param: ~busio.I2C i2c_bus: The I2C bus the EEPROM is connected to.
     :param: int address: I2C address of EEPROM. Default address is ``0x50``.
     :param: bool write_protect: Turns on/off initial write protection.
-                                Default is ``False``.
+    Default is ``False``.
     :param: wp_pin: (Optional) Physical pin connected to the ``WP`` breakout pin.
-                    Must be a ``digitalio.DigitalInOut`` object.
+    Must be a ``digitalio.DigitalInOut`` object.
     """
 
     # pylint: disable=too-many-arguments
@@ -245,6 +245,7 @@ class EEPROM_I2C(EEPROM):
                 i2c.write(buffer)
 
                 time.sleep(0.005)
+
     # pylint: disable=no-member
     @EEPROM.write_protected.setter
     def write_protected(self, value):

@@ -47,6 +47,11 @@ _MAX_SIZE_I2C = const(0x1000)
 class EEPROM:
     """
     Driver base for the EEPROM Breakout.
+
+    :param int max_size: The maximum size of the EEPROM
+    :param bool write_protect: Turns on/off initial write protection
+    :param DigitalInOut wp_pin: (Optional) Physical pin connected to the ``WP`` breakout pin.
+        Must be a ``DigitalInOut`` object.
     """
 
     def __init__(self, max_size: int, write_protect: bool = False, wp_pin: Optional[DigitalInOut] = None) -> None:
@@ -79,9 +84,11 @@ class EEPROM:
     def write_protected(self) -> bool:
         """The status of write protection. Default value on initialization is
         ``False``.
+
         When a ``WP`` pin is supplied during initialization, or using
         ``write_protect_pin``, the status is tied to that pin and enables
         hardware-level protection.
+
         When no ``WP`` pin is supplied, protection is only at the software
         level in this library.
         """
@@ -90,7 +97,9 @@ class EEPROM:
     def __len__(self) -> int:
         """The size of the current EEPROM chip. This is one more than the highest
         address location that can be read or written to.
+        
         .. code-block:: python
+
             eeprom = adafruit_24lc32.EEPROM_I2C()
             # size returned by len()
             len(eeprom)
@@ -101,7 +110,9 @@ class EEPROM:
 
     def __getitem__(self, address: Union[int, slice]) -> bytearray:
         """Read the value at the given index, or values in a slice.
+
         .. code-block:: python
+
             # read single index
             eeprom[0]
             # read values 0 thru 9 with a slice
@@ -139,7 +150,9 @@ class EEPROM:
 
     def __setitem__(self, address: Union[int, slice], value: Union[int, Sequence[int]]) -> None:
         """Write the value at the given starting index.
+
         .. code-block:: python
+
             # write single index
             eeprom[0] = 1
             # write values 0 thru 4 with a list
@@ -194,12 +207,13 @@ class EEPROM:
 
 class EEPROM_I2C(EEPROM):
     """I2C class for EEPROM.
-    :param: ~busio.I2C i2c_bus: The I2C bus the EEPROM is connected to.
-    :param: int address: I2C address of EEPROM. Default address is ``0x50``.
-    :param: bool write_protect: Turns on/off initial write protection.
-    Default is ``False``.
-    :param: wp_pin: (Optional) Physical pin connected to the ``WP`` breakout pin.
-    Must be a ``digitalio.DigitalInOut`` object.
+
+    :param ~busio.I2C i2c_bus: The I2C bus the EEPROM is connected to.
+    :param int address: I2C address of EEPROM. Default address is ``0x50``.
+    :param bool write_protect: Turns on/off initial write protection.
+        Default is ``False``.
+    :param wp_pin: (Optional) Physical pin connected to the ``WP`` breakout pin.
+        Must be a ``DigitalInOut`` object.
     """
 
     # pylint: disable=too-many-arguments

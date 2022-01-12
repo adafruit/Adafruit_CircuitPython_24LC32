@@ -84,11 +84,11 @@ class EEPROM:
         """The size of the current EEPROM chip. This is one more than the highest
         address location that can be read or written to.
         .. code-block:: python
-            fram = adafruit_fram.FRAM_xxx() # xxx = 'I2C' or 'SPI'
+            eeprom = adafruit_24lc32.EEPROM_I2C()
             # size returned by len()
-            len(fram)
+            len(eeprom)
             # can be used with range
-            for i in range(0, len(fram))
+            for i in range(0, len(eeprom))
         """
         return self._max_size
 
@@ -96,9 +96,9 @@ class EEPROM:
         """Read the value at the given index, or values in a slice.
         .. code-block:: python
             # read single index
-            fram[0]
+            eeprom[0]
             # read values 0 thru 9 with a slice
-            fram[0:9]
+            eeprom[0:9]
         """
         if isinstance(address, int):
             if not 0 <= address < self._max_size:
@@ -134,12 +134,12 @@ class EEPROM:
         """Write the value at the given starting index.
         .. code-block:: python
             # write single index
-            fram[0] = 1
+            eeprom[0] = 1
             # write values 0 thru 4 with a list
-            fram[0:4] = [0,1,2,3]
+            eeprom[0:4] = [0,1,2,3]
         """
         if self.write_protected:
-            raise RuntimeError("FRAM currently write protected.")
+            raise RuntimeError("EEPROM currently write protected.")
 
         if isinstance(address, int):
             if not isinstance(value, int):
@@ -230,7 +230,7 @@ class EEPROM_I2C(EEPROM):
             else:
                 raise ValueError(
                     "Starting address + data length extends beyond"
-                    " FRAM maximum address. Use ``write_wraparound`` to"
+                    " EEPROM maximum address. Use ``write_wraparound`` to"
                     " override this warning."
                 )
         with self._i2c as i2c:

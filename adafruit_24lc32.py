@@ -254,7 +254,7 @@ class EEPROM_I2C(EEPROM):
         data: Union[int, Sequence[int]],
         wraparound: bool = False,
     ) -> None:
-    
+
         # Decided against using the chip's "Page Write", since that would require
         # doubling the memory usage by creating a buffer that includes the passed
         # in data so that it can be sent all in one `i2c.write`. The single-write

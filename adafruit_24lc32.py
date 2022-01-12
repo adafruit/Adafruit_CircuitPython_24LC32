@@ -31,6 +31,13 @@ Implementation Notes
 import time
 from micropython import const
 
+try:
+    from typing import Optional, Union, Sequence
+    from digitalio import DigitalInOut
+    from busio import I2C
+except ImportError:
+    pass
+
 __version__ = "0.0.0-auto.0"
 __repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_24LC32.git"
 
@@ -42,7 +49,7 @@ class EEPROM:
     Driver base for the EEPROM Breakout.
     """
 
-    def __init__(self, max_size, write_protect=False, wp_pin=None):
+    def __init__(self, max_size: int, write_protect: bool = False, wp_pin: Optional[DigitalInOut] = None) -> None:
         self._max_size = max_size
         self._wp = write_protect
         self._wraparound = False
@@ -55,7 +62,7 @@ class EEPROM:
             self._wp_pin = wp_pin
 
     @property
-    def write_wraparound(self):
+    def write_wraparound(self) -> bool:
         """Determines if sequential writes will wrapaound highest memory address
         (``len(EEPROM) - 1``) address. If ``False``, and a requested write will
         extend beyond the maximum size, an exception is raised.
@@ -63,13 +70,13 @@ class EEPROM:
         return self._wraparound
 
     @write_wraparound.setter
-    def write_wraparound(self, value):
         if not value in (True, False):
+    def write_wraparound(self, value: bool) -> None:
             raise ValueError("Write wraparound must be 'True' or 'False'.")
         self._wraparound = value
 
     @property
-    def write_protected(self):
+    def write_protected(self) -> bool:
         """The status of write protection. Default value on initialization is
         ``False``.
         When a ``WP`` pin is supplied during initialization, or using
@@ -80,7 +87,7 @@ class EEPROM:
         """
         return self._wp if self._wp_pin is None else self._wp_pin.value
 
-    def __len__(self):
+    def __len__(self) -> int:
         """The size of the current EEPROM chip. This is one more than the highest
         address location that can be read or written to.
         .. code-block:: python
@@ -92,7 +99,7 @@ class EEPROM:
         """
         return self._max_size
 
-    def __getitem__(self, address):
+    def __getitem__(self, address: Union[int, slice]) -> bytearray:
         """Read the value at the given index, or values in a slice.
         .. code-block:: python
             # read single index
@@ -130,7 +137,7 @@ class EEPROM:
 
         return read_buffer
 
-    def __setitem__(self, address, value):
+    def __setitem__(self, address: Union[int, slice], value: Union[int, Sequence[int]]) -> None:
         """Write the value at the given starting index.
         .. code-block:: python
             # write single index
@@ -176,11 +183,11 @@ class EEPROM:
 
             self._write(address.start, value, self._wraparound)
 
-    def _read_address(self, address, read_buffer):
+    def _read_address(self, address: int, read_buffer: bytearray) -> bytearray:
         # Implemented by subclass
         raise NotImplementedError
 
-    def _write(self, start_address, data, wraparound):
+    def _write(self, start_address: int, data: Union[int, Sequence[int]], wraparound: bool) -> None:
         # Implemened by subclass
         raise NotImplementedError
 
@@ -196,7 +203,7 @@ class EEPROM_I2C(EEPROM):
     """
 
     # pylint: disable=too-many-arguments
-    def __init__(self, i2c_bus, address=0x50, write_protect=False, wp_pin=None):
+    def __init__(self, i2c_bus: I2C, address: int = 0x50, write_protect: bool = False, wp_pin: Optional[DigitalInOut] = None) -> None:
         from adafruit_bus_device.i2c_device import (  # pylint: disable=import-outside-toplevel
             I2CDevice as i2cdev,
         )
@@ -204,7 +211,7 @@ class EEPROM_I2C(EEPROM):
         self._i2c = i2cdev(i2c_bus, address)
         super().__init__(_MAX_SIZE_I2C, write_protect, wp_pin)
 
-    def _read_address(self, address, read_buffer):
+    def _read_address(self, address: int, read_buffer: bytearray) -> bytearray:
         write_buffer = bytearray(2)
         write_buffer[0] = address >> 8
         write_buffer[1] = address & 0xFF
@@ -212,7 +219,7 @@ class EEPROM_I2C(EEPROM):
             i2c.write_then_readinto(write_buffer, read_buffer)
         return read_buffer
 
-    def _write(self, start_address, data, wraparound=False):
+    def _write(self, start_address: int, data: Union[int, Sequence[int]], wraparound: bool = False) -> None:
         # Decided against using the chip's "Page Write", since that would require
         # doubling the memory usage by creating a buffer that includes the passed
         # in data so that it can be sent all in one `i2c.write`. The single-write
@@ -248,8 +255,8 @@ class EEPROM_I2C(EEPROM):
 
     # pylint: disable=no-member
     @EEPROM.write_protected.setter
-    def write_protected(self, value):
         if value not in (True, False):
+    def write_protected(self, value: bool) -> None:
             raise ValueError("Write protected value must be 'True' or 'False'.")
         self._wp = value
         if not self._wp_pin is None:

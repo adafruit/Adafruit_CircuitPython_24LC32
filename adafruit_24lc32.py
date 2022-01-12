@@ -54,7 +54,12 @@ class EEPROM:
         Must be a ``DigitalInOut`` object.
     """
 
-    def __init__(self, max_size: int, write_protect: bool = False, wp_pin: Optional[DigitalInOut] = None) -> None:
+    def __init__(
+        self,
+        max_size: int,
+        write_protect: bool = False,
+        wp_pin: Optional[DigitalInOut] = None,
+    ) -> None:
         self._max_size = max_size
         self._wp = write_protect
         self._wraparound = False
@@ -97,7 +102,7 @@ class EEPROM:
     def __len__(self) -> int:
         """The size of the current EEPROM chip. This is one more than the highest
         address location that can be read or written to.
-        
+
         .. code-block:: python
 
             eeprom = adafruit_24lc32.EEPROM_I2C()
@@ -148,7 +153,9 @@ class EEPROM:
 
         return read_buffer
 
-    def __setitem__(self, address: Union[int, slice], value: Union[int, Sequence[int]]) -> None:
+    def __setitem__(
+        self, address: Union[int, slice], value: Union[int, Sequence[int]]
+    ) -> None:
         """Write the value at the given starting index.
 
         .. code-block:: python
@@ -200,7 +207,9 @@ class EEPROM:
         # Implemented by subclass
         raise NotImplementedError
 
-    def _write(self, start_address: int, data: Union[int, Sequence[int]], wraparound: bool) -> None:
+    def _write(
+        self, start_address: int, data: Union[int, Sequence[int]], wraparound: bool
+    ) -> None:
         # Implemened by subclass
         raise NotImplementedError
 
@@ -217,7 +226,13 @@ class EEPROM_I2C(EEPROM):
     """
 
     # pylint: disable=too-many-arguments
-    def __init__(self, i2c_bus: I2C, address: int = 0x50, write_protect: bool = False, wp_pin: Optional[DigitalInOut] = None) -> None:
+    def __init__(
+        self,
+        i2c_bus: I2C,
+        address: int = 0x50,
+        write_protect: bool = False,
+        wp_pin: Optional[DigitalInOut] = None,
+    ) -> None:
         from adafruit_bus_device.i2c_device import (  # pylint: disable=import-outside-toplevel
             I2CDevice as i2cdev,
         )
@@ -233,7 +248,12 @@ class EEPROM_I2C(EEPROM):
             i2c.write_then_readinto(write_buffer, read_buffer)
         return read_buffer
 
-    def _write(self, start_address: int, data: Union[int, Sequence[int]], wraparound: bool = False) -> None:
+    def _write(
+        self,
+        start_address: int,
+        data: Union[int, Sequence[int]],
+        wraparound: bool = False,
+    ) -> None:
         # Decided against using the chip's "Page Write", since that would require
         # doubling the memory usage by creating a buffer that includes the passed
         # in data so that it can be sent all in one `i2c.write`. The single-write

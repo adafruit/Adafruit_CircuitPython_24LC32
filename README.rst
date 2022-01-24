@@ -3,7 +3,7 @@ Introduction
 
 
 .. image:: https://readthedocs.org/projects/adafruit-circuitpython-24lc32/badge/?version=latest
-    :target: https://circuitpython.readthedocs.io/projects/24lc32/en/latest/
+    :target: https://docs.circuitpython.org/projects/24lc32/en/latest/
     :alt: Documentation Status
 
 

@@ -35,7 +35,7 @@ Table of Contents
 
     Download from GitHub <https://github.com/adafruit/Adafruit_CircuitPython_24LC32/releases/latest>
     Download Library Bundle <https://circuitpython.org/libraries>
-    CircuitPython Reference Documentation <https://circuitpython.readthedocs.io>
+    CircuitPython Reference Documentation <https://docs.circuitpython.org>
     CircuitPython Support Forum <https://forums.adafruit.com/viewforum.php?f=60>
     Discord Chat <https://adafru.it/discord>
     Adafruit Learning System <https://learn.adafruit.com>

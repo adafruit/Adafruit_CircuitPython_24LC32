@@ -100,10 +100,10 @@ Usage Example
 .. code-block:: python3
 
     import board
-    import adafruit_eeprom
+    import adafruit_24lc32
 
     i2c = board.I2C()
-    eeprom = adafruit_eeprom.EEPROM_I2C(i2c)
+    eeprom = adafruit_24lc32.EEPROM_I2C(i2c)
 
     print("length: {}".format(len(eeprom)))
 

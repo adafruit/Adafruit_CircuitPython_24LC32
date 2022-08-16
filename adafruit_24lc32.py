@@ -38,7 +38,7 @@ try:
 except ImportError:
     pass
 
-__version__ = "0.0.0-auto.0"
+__version__ = "0.0.0+auto.0"
 __repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_24LC32.git"
 
 _MAX_SIZE_I2C = const(0x1000)

@@ -234,7 +234,7 @@ class EEPROM_I2C(EEPROM):
         address: int = 0x50,
         write_protect: bool = False,
         wp_pin: Optional[DigitalInOut] = None,
-        max_size: int = _MAX_SIZE_I2C
+        max_size: int = _MAX_SIZE_I2C,
     ) -> None:
         from adafruit_bus_device.i2c_device import (  # pylint: disable=import-outside-toplevel
             I2CDevice as i2cdev,

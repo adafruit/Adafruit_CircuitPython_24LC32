@@ -223,6 +223,8 @@ class EEPROM_I2C(EEPROM):
         Default is ``False``.
     :param wp_pin: (Optional) Physical pin connected to the ``WP`` breakout pin.
         Must be a ``DigitalInOut`` object.
+    :param max_int: (Optional) Maximum # bytes stored in the EEPROM.
+        Default is ``_MAX_SIZE_I2C``
     """
 
     # pylint: disable=too-many-arguments
@@ -232,13 +234,14 @@ class EEPROM_I2C(EEPROM):
         address: int = 0x50,
         write_protect: bool = False,
         wp_pin: Optional[DigitalInOut] = None,
+        max_size: int = _MAX_SIZE_I2C,
     ) -> None:
         from adafruit_bus_device.i2c_device import (  # pylint: disable=import-outside-toplevel
             I2CDevice as i2cdev,
         )
 
         self._i2c = i2cdev(i2c_bus, address)
-        super().__init__(_MAX_SIZE_I2C, write_protect, wp_pin)
+        super().__init__(max_size, write_protect, wp_pin)
 
     def _read_address(self, address: int, read_buffer: bytearray) -> bytearray:
         write_buffer = bytearray(2)

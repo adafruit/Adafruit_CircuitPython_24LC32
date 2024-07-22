@@ -223,7 +223,7 @@ class EEPROM_I2C(EEPROM):
         Default is ``False``.
     :param wp_pin: (Optional) Physical pin connected to the ``WP`` breakout pin.
         Must be a ``DigitalInOut`` object.
-    :param max_int: (Optional) Maximum # bytes stored in the EEPROM.
+    :param int max_size: (Optional) Maximum # bytes stored in the EEPROM.
         Default is ``_MAX_SIZE_I2C``
     """
 

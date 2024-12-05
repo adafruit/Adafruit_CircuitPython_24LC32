@@ -177,8 +177,8 @@ class EEPROM:
                         address, self._max_size
                     )
                 )
-
-            self._write(address, value, self._wraparound)
+            if self[address] != bytearray([value]):
+                self._write(address, value, self._wraparound)
 
         elif isinstance(address, slice):
             if not isinstance(value, (bytes, bytearray, list, tuple)):
@@ -200,8 +200,8 @@ class EEPROM:
                 raise ValueError(
                     "Cannot set values with a list smaller than the number of indexes"
                 )
-
-            self._write(address.start, value, self._wraparound)
+            if self[address] != bytes(value):
+                self._write(address.start, value, self._wraparound)
 
     def _read_address(self, address: int, read_buffer: bytearray) -> bytearray:
         # Implemented by subclass

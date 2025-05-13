@@ -29,12 +29,14 @@ Implementation Notes
 
 # imports
 import time
+
 from micropython import const
 
 try:
-    from typing import Optional, Union, Sequence
-    from digitalio import DigitalInOut
+    from typing import Optional, Sequence, Union
+
     from busio import I2C
+    from digitalio import DigitalInOut
 except ImportError:
     pass
 
@@ -126,9 +128,7 @@ class EEPROM:
         if isinstance(address, int):
             if not 0 <= address < self._max_size:
                 raise ValueError(
-                    "Address '{0}' out of range. It must be 0 <= address < {1}.".format(
-                        address, self._max_size
-                    )
+                    f"Address '{address}' out of range. It must be 0 <= address < {self._max_size}."
                 )
             buffer = bytearray(1)
             read_buffer = self._read_address(address, buffer)
@@ -145,7 +145,7 @@ class EEPROM:
             if regs[0] < 0 or (regs[0] + len(regs)) > self._max_size:
                 raise ValueError(
                     "Address slice out of range. It must be 0 <= [starting address"
-                    ":stopping address] < {0}.".format(self._max_size)
+                    f":stopping address] < {self._max_size}."
                 )
 
             buffer = bytearray(len(regs))
@@ -153,9 +153,7 @@ class EEPROM:
 
         return read_buffer
 
-    def __setitem__(
-        self, address: Union[int, slice], value: Union[int, Sequence[int]]
-    ) -> None:
+    def __setitem__(self, address: Union[int, slice], value: Union[int, Sequence[int]]) -> None:
         """Write the value at the given starting index.
 
         .. code-block:: python
@@ -173,9 +171,7 @@ class EEPROM:
                 raise ValueError("Data stored in an address must be an integer 0-255")
             if not 0 <= address < self._max_size:
                 raise ValueError(
-                    "Address '{0}' out of range. It must be 0 <= address < {1}.".format(
-                        address, self._max_size
-                    )
+                    f"Address '{address}' out of range. It must be 0 <= address < {self._max_size}."
                 )
             if self[address] != bytearray([value]):
                 self._write(address, value, self._wraparound)
@@ -183,8 +179,7 @@ class EEPROM:
         elif isinstance(address, slice):
             if not isinstance(value, (bytes, bytearray, list, tuple)):
                 raise ValueError(
-                    "Data must be bytes, bytearray, list, "
-                    "or tuple for multiple addresses"
+                    "Data must be bytes, bytearray, list, " "or tuple for multiple addresses"
                 )
             if (address.start is None) or (address.stop is None):
                 raise ValueError("Boundless slices are not supported")
@@ -192,14 +187,10 @@ class EEPROM:
                 raise ValueError("Slice stepping is not currently available.")
             if (address.start < 0) or (address.stop > self._max_size):
                 raise ValueError(
-                    "Slice '{0}:{1}' out of range. All addresses must be 0 <= address < {2}.".format(  # pylint: disable=line-too-long
-                        address.start, address.stop, self._max_size
-                    )
+                    f"Slice '{address.start}:{address.stop}' out of range. All addresses must be 0 <= address < {self._max_size}."  # noqa: E501
                 )
             if len(value) < (len(range(address.start, address.stop))):
-                raise ValueError(
-                    "Cannot set values with a list smaller than the number of indexes"
-                )
+                raise ValueError("Cannot set values with a list smaller than the number of indexes")
             if self[address] != bytes(value):
                 self._write(address.start, value, self._wraparound)
 
@@ -207,9 +198,7 @@ class EEPROM:
         # Implemented by subclass
         raise NotImplementedError
 
-    def _write(
-        self, start_address: int, data: Union[int, Sequence[int]], wraparound: bool
-    ) -> None:
+    def _write(self, start_address: int, data: Union[int, Sequence[int]], wraparound: bool) -> None:
         # Implemened by subclass
         raise NotImplementedError
 
@@ -227,7 +216,6 @@ class EEPROM_I2C(EEPROM):
         Default is ``_MAX_SIZE_I2C``
     """
 
-    # pylint: disable=too-many-arguments
     def __init__(
         self,
         i2c_bus: I2C,
@@ -236,7 +224,7 @@ class EEPROM_I2C(EEPROM):
         wp_pin: Optional[DigitalInOut] = None,
         max_size: int = _MAX_SIZE_I2C,
     ) -> None:
-        from adafruit_bus_device.i2c_device import (  # pylint: disable=import-outside-toplevel
+        from adafruit_bus_device.i2c_device import (  # noqa: PLC0415
             I2CDevice as i2cdev,
         )
 
@@ -290,7 +278,6 @@ class EEPROM_I2C(EEPROM):
 
                 time.sleep(0.005)
 
-    # pylint: disable=no-member
     @EEPROM.write_protected.setter
     def write_protected(self, value: bool) -> None:
         if not isinstance(value, bool):
